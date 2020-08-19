@@ -4,7 +4,7 @@ import "testing"
 
 func TestFileTreeBackendGetter(t *testing.T) {
 	tb := &fileTreeBackend{
-		rootPath: "testing",
+		rootPath: "./testing",
 	}
 	_, err := newFileTreeBackendGetter(tb)
 	if err != nil {

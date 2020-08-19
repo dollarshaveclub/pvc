@@ -41,7 +41,10 @@ func newFileTreeBackendGetter(ft *fileTreeBackend) (*fileTreeBackendGetter, erro
 
 func (ftg *fileTreeBackendGetter) Get(id string) ([]byte, error) {
 	key, err := ftg.mapper.MapSecret(id)
-	secretFilePath := fmt.Sprintf("%v/%v", ftg.rootPath, key)
+	if err != nil {
+		return nil, fmt.Errorf("file tree error mapping secret id %v : %v", id, err)
+	}
+	secretFilePath := fmt.Sprintf("%v/%v", ftg.config.rootPath, key)
 	fi, err := os.Stat(secretFilePath)
 	if err != nil {
 		return nil, fmt.Errorf("file tree error, error getting file stats :%v", err)
@@ -50,8 +53,9 @@ func (ftg *fileTreeBackendGetter) Get(id string) ([]byte, error) {
 	if size > MaxFileTreeFileSizeBytes {
 		return nil, fmt.Errorf("file tree error secret file to large: %v", err)
 	}
-	if c, err := ioutil.ReadFile(secretFilePath); err != nil {
-		return []byte(c), nil
+	c, err := ioutil.ReadFile(secretFilePath)
+	if err != nil {
+		return nil , fmt.Errorf("file tree error reading file: %v", err)
 	}
-	return nil, fmt.Errorf("file tree error retrieving secret %v at path %v : %v", id, secretFilePath, err)
+	return []byte(c), nil
 }
