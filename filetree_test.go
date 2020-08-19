@@ -2,8 +2,8 @@ package pvc
 
 import "testing"
 
-func TestLocalfileBackendGetter(t *testing.T) {
-	tb := &LocalfileBackend{
+func TestFileTreeBackendGetter(t *testing.T) {
+	tb := &fileTreeBackend{
 		rootPath: "testing",
 	}
 	_, err := newLocalfileBackendGetter(tb)
@@ -12,12 +12,12 @@ func TestLocalfileBackendGetter(t *testing.T) {
 	}
 }
 
-func TestLocalfileBackendGetterGet(t *testing.T) {
+func TestFileTreeBackendGetterGet(t *testing.T) {
 	expectedValue := "DrFeelgood"
-	tb := &LocalFileBackend{
+	tb := &fileTreeBackend{
 		rootPath: "testing",
 	}
-	tbg, err := newLocalfileBackendGetter(tb)
+	tbg, err := newFileTreeBackendGetter(tb)
 	if err != nil {
 		t.Fatalf("should have succeeded: %v", err)
 	}

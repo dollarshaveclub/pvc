@@ -95,6 +95,16 @@ func WithFileTreeBackend() SecretsClientOption {
 	}
 }
 
+// WithFileTree enables the FileTreBackend
+func WithFileTreeRootPath(rootPath string) SecretsClientOption {
+	return func(s *secretsClientConfig) {
+		if s.fileTreeBackend == nil {
+			s.fileTreeBackend == &fileTreeBackend{}
+		}
+		s.fileTreeBackend.rootPath = rootPath
+	}
+}
+
 // WithVaultBackend enables the Vault backend.
 func WithVaultBackend() SecretsClientOption {
 	return func(s *secretsClientConfig) {

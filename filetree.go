@@ -40,7 +40,8 @@ func newFileTreeBackendGetter(ft *fileTreeBackend) (*fileTreeBackendGetter, erro
 
 
 func (ftg *fileTreeBackendGetter) Get(id string) ([]byte, error) {
-	secretFilePath := fmt.Sprintf("%v/%v", ftg.rootPath, id)
+	key, err := ftg.mapper.MapSecret(id)
+	secretFilePath := fmt.Sprintf("%v/%v", ftg.rootPath, key)
 	fi, err := os.Stat(secretFilePath)
 	if err != nil {
 		return nil, fmt.Errorf("file tree error, error getting file stats :%v", err)
