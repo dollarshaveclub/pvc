@@ -36,7 +36,7 @@ func newFileTreeBackendGetter(ft *fileTreeBackend) (*fileTreeBackendGetter, erro
 }
 
 func (ftg *fileTreeBackendGetter) Get(id string) ([]byte, error) {
-	fi, err := os.Stat(fmt.Sprintf("%v/%v", ftg.rootPath, id)
+	fi, err := os.Stat(fmt.Sprintf("%v/%v", ftg.rootPath, id))
 	if err != nil {
 		return err
 	}
