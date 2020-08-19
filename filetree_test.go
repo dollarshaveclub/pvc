@@ -6,7 +6,7 @@ func TestFileTreeBackendGetter(t *testing.T) {
 	tb := &fileTreeBackend{
 		rootPath: "testing",
 	}
-	_, err := newLocalfileBackendGetter(tb)
+	_, err := newFileTreeBackendGetter(tb)
 	if err != nil {
 		t.Fatalf("should have succeeded: %v", err)
 	}
