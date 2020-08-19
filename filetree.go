@@ -2,6 +2,7 @@ package pvc
 
 import (
 	"fmt"
+	"os"
 	"io/ioutil"
 )
 
@@ -10,7 +11,7 @@ const (
 	DefaultFileTreeMapping = "{{ .ID }}"
 	DefaultFileTreeRootPath = "/vault/secrets"
 	// TODO make this overrideable through cmd flags
-	MaxFileTreeFileSizeBytes = "2_000_000" // 2 MB```"
+	MaxFileTreeFileSizeBytes = 2_000_000 // 2 MB```"
 )
 
 type fileTreeBackendGetter struct {
@@ -28,31 +29,31 @@ func newFileTreeBackendGetter(ft *fileTreeBackend) (*fileTreeBackendGetter, erro
 	if err != nil {
 		return nil, fmt.Errorf("file tree error with mapping: %v", err)
 	}
+	if ft.rootPath == "" {
+		ft.rootPath = DefaultFileTreeRootPath
+	}
 	return &fileTreeBackendGetter{
 		mapper:   sm,
 		config:   ft,
-		contents: c,
 	}, nil
 }
 
+
 func (ftg *fileTreeBackendGetter) Get(id string) ([]byte, error) {
-	fi, err := os.Stat(fmt.Sprintf("%v/%v", ftg.rootPath, id))
+	secretFilePath := fmt.Sprintf("%v/%v", ftg.rootPath, id)
+	fi, err := os.Stat(secretFilePath)
 	if err != nil {
-		return err
+		return nil, fmt.Errorf("file tree error, error getting file stats :%v", err)
 	}
 	size := fi.Size()
 	if size > MaxFileTreeFileSizeBytes {
 		return nil, fmt.Errorf("file tree error secret file to large: %v", err)
 	}
-	if c, err := ioutil.ReadFile(ft.fileLocation); err != nil {
-		return nil, fmt.Errorf("file tree error reading file location %v", err)
-	}
-	key, err := ftg.mapper.MapSecret(id)
 	if err != nil {
 		return nil, fmt.Errorf("error mapping id to object key: %v", err)
 	}
-	if val, ok := ftg.contents[key]; ok {
-		return []byte(val), nil
+	if c, err := ioutil.ReadFile(secretFilePath); err != nil {
+		return []byte(c), nil
 	}
 	return nil, fmt.Errorf("secret not found: %v", key)
 }

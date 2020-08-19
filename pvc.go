@@ -86,7 +86,7 @@ func WithMapping(mapping string) SecretsClientOption {
 }
 
 // WithFileTree enables the FileTreBackend
-funct WithFileTreeBackend() SecretsClientOption {
+func WithFileTreeBackend() SecretsClientOption {
 	return func(s *secretsClientConfig) {
 		if s.fileTreeBackend == nil {
 			s.fileTreeBackend == &fileTreeBackend{}
