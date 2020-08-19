@@ -30,3 +30,4 @@ func TestFileTreeBackendGetterGet(t *testing.T) {
 		t.Fatalf("bad value: %v (expected %v)", string(s), expectedValue)
 	}
 }
+
