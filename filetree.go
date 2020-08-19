@@ -1,6 +1,7 @@
 package pvc
 
 import (
+	"encoding/base64"
 	"fmt"
 	"os"
 	"io/ioutil"
@@ -57,5 +58,10 @@ func (ftg *fileTreeBackendGetter) Get(id string) ([]byte, error) {
 	if err != nil {
 		return nil , fmt.Errorf("file tree error reading file: %v", err)
 	}
-	return []byte(c), nil
+	d, err := base64.StdEncoding.DecodeString(string(c))
+	if err != nil {
+		// not base64 encoded
+		return c, nil
+	}
+	return d, nil
 }
