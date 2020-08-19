@@ -297,7 +297,7 @@ func NewSecretsClient(ops ...SecretsClientOption) (*SecretsClient, error) {
 		config.fileTreeBackend.mapping = config.mapping 
 		ftbe, err := newFileTreeBackendGetter(config.fileTreeBackend)
 		if err != nil {
-			return nil, fmt.Error("error getting FileTree backend: %v", err)
+			return nil, fmt.Errorf("error getting FileTree backend: %v", err)
 		}
 	}
 	return &sc, nil

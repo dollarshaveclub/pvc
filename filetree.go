@@ -49,11 +49,8 @@ func (ftg *fileTreeBackendGetter) Get(id string) ([]byte, error) {
 	if size > MaxFileTreeFileSizeBytes {
 		return nil, fmt.Errorf("file tree error secret file to large: %v", err)
 	}
-	if err != nil {
-		return nil, fmt.Errorf("error mapping id to object key: %v", err)
-	}
 	if c, err := ioutil.ReadFile(secretFilePath); err != nil {
 		return []byte(c), nil
 	}
-	return nil, fmt.Errorf("secret not found: %v", key)
+	return nil, fmt.Errorf("file tree error retrieving secret %v at path %v : %v", id, secretFilePath, err)
 }
