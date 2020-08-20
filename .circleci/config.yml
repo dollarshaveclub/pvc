@@ -34,7 +34,8 @@ jobs:
           VAULT_TEST_USERID: asdf
           VAULT_TEST_TOKEN: root
           VAULT_DEV_ALREADY_RUNNING: 1
-        command: ['-p 8200:8200', '-e "VAULT_USE_APP_ID=1"', '-v "${PWD}/pvc/testing/vault_app_ids.json:/opt/app-id.json"', '-v "${PWD}/pvc/testing/vault_secrets.json:/opt/secrets.json"', '-v "${PWD}/pvc/testing/vault_policies.json:/opt/policies.json"']
+          VAULT_USE_APP_ID: 1
+        entrypoint: ['-p 8200:8200', '-e "VAULT_USE_APP_ID=1"', '-v "${PWD}/pvc/testing/vault_app_ids.json:/opt/app-id.json"', '-v "${PWD}/pvc/testing/vault_secrets.json:/opt/secrets.json"', '-v "${PWD}/pvc/testing/vault_policies.json:/opt/policies.json"']
     working_directory: /go/src/github.com/dollarshaveclub/pvc
     steps:
       - attach_workspace:
