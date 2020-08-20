@@ -16,8 +16,7 @@ jobs:
       - checkout
       - run: go build 
   test:
-    docker: 
-      - image: docker:stable-git
+    docker:
       - image: circleci/golang:1.14
         environment:
         - VAULT_ADDR: "http://localhost:8200"
@@ -33,9 +32,6 @@ jobs:
       - run: 
           name: Start Vault Dev Server
           command: docker run --name vault -d -p 8200:8200 -e "VAULT_USE_APP_ID=1" -v "${PWD}/pvc/testing/vault_app_ids.json:/opt/app-id.json" -v "${PWD}/pvc/testing/vault_secrets.json:/opt/secrets.json" -v "${PWD}/pvc/testing/vault_policies.json:/opt/policies.json" quay.io/dollarshaveclub/vault-dev:master
-      - run: 
-          name: Compile PVC Binary
-          command: go install github.com/dollarshaveclub/pvc
       - run:
           name: Running tests
           command: go test -v -race -cover
