@@ -35,7 +35,7 @@ jobs:
           VAULT_TEST_TOKEN: root
           VAULT_DEV_ALREADY_RUNNING: 1
           VAULT_USE_APP_ID: 1
-        command: ['cp ./testing/vault_app_ids.json /opt/app-id.json', 'cp ./testing/vault_secrets.json /opt/secrets.json"', 'cp ./testing/vault_policies.json /opt/policies.json']
+        command: ['-v  ./testing/vault_app_ids.json:/opt/app-id.json', '-v ./testing/vault_secrets.json:/opt/secrets.json"', '-v ./testing/vault_policies.json:/opt/policies.json']
     working_directory: /go/src/github.com/dollarshaveclub/pvc
     steps:
       - attach_workspace:
