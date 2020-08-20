@@ -33,9 +33,9 @@ jobs:
       - setup_remote_docker
       - run: |
           docker create -v /cfg --name vault-dev-cfg alpine:3.4 /bin/true
-          docker cp ./testing/vault_app_ids.json vault-dev-opts:/cfg/app-id.json
-          docker cp ./testing/vault_secrets.json vault-dev-opts:/cfg/secrets.json
-          docker cp ./testing/vault_policies.json vault-dev-opts:/cfg/policies.json
+          docker cp ./testing/vault_app_ids.json vault-dev-cfg:/cfg/app-id.json
+          docker cp ./testing/vault_secrets.json vault-dev-cfg:/cfg/secrets.json
+          docker cp ./testing/vault_policies.json vault-dev-cfg:/cfg/policies.json
           docker run --volumes-from vault-dev-cfg -d --name vault -p 8200:8200 -e "VAULT_USE_APP_ID=1" -e "VAULT_SECRETS_FILE=/cfg/secrets.json" -e "VAULT_APP_ID_FILE=/cfg/app-id.json" -e "VAULT_POLICIES_FILE=/cfg/policies.json" quay.io/dollarshaveclub/vault-dev:master
           sleep 20
       - run:
