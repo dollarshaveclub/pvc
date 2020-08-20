@@ -30,6 +30,7 @@ jobs:
       - attach_workspace:
           at: .
       - checkout
+      - setup_remote_docker
       - run: |
           docker create -v /opt --name vault-dev-opts alpine:3.4 /bin/true
           docker cp ./testing/vault_app_ids.json vault-dev-opts:/opt/app-id.json
