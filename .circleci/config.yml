@@ -25,12 +25,6 @@ jobs:
           VAULT_TEST_USERID: asdf
           VAULT_TEST_TOKEN: root
           VAULT_DEV_ALREADY_RUNNING: 1
-      - image: quay.io/dollarshaveclub/vault-dev:master
-        environment: 
-          VAULT_USE_APP_ID: 1
-        command: |
-          run --volumes-from vault-dev-opts -d --name vault -p 8200:8200
-
     working_directory: /go/src/github.com/dollarshaveclub/pvc
     steps:
       - attach_workspace:
@@ -41,6 +35,8 @@ jobs:
           docker cp ./testing/vault_app_ids.json vault-dev-opts:/opt/app-id.json
           docker cp ./testing/vault_secrets.json vault-dev-opts:/opt/secrets.json
           docker cp ./testing/vault_policies.json vault-dev-opts:/opt/policies.json
+          docker run --volumes-from vault-dev-opts -d --name vault -p 8200:8200 -e "VAULT_USE_APP_ID=1" quay.io/dollarshaveclub/vault-dev:master
+          sleep 20
       - run:
           name: Running tests
           command: go test -v -race -cover
