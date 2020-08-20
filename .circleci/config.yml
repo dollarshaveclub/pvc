@@ -11,7 +11,7 @@ jobs:
           VAULT_TEST_USERID: asdf
           VAULT_TEST_TOKEN: root
           VAULT_DEV_ALREADY_RUNNING: 1
-    working_directory: .
+    working_directory: /go/src/github.com/dollarshaveclub/pvc
     steps:
       - checkout
       - run: go build 
