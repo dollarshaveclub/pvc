@@ -16,6 +16,8 @@ jobs:
       - checkout
       - run: go build 
   test:
+    docker:
+      - image: circleci/golang:1.14
     steps:
       - attach_workspace:
           at: .
