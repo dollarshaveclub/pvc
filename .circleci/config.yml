@@ -19,29 +19,21 @@ jobs:
     docker:
       - image: circleci/golang:1.14
         environment:
-          VAULT_ADDR: "http://localhost:8200"
+          VAULT_ADDR: "http://vault:8200"
           VAULT_TOKEN: root
           VAULT_TEST_APPID: testing
           VAULT_TEST_USERID: asdf
           VAULT_TEST_TOKEN: root
           VAULT_DEV_ALREADY_RUNNING: 1
-      - image: quay.io/dollarshaveclub/vault-dev:master
-        name: vault
-        environment:
-          VAULT_ADDR: "http://localhost:8200"
-          VAULT_TOKEN: root
-          VAULT_TEST_APPID: testing
-          VAULT_TEST_USERID: asdf
-          VAULT_TEST_TOKEN: root
-          VAULT_DEV_ALREADY_RUNNING: 1
-          VAULT_USE_APP_ID: 1
-        command: ['-v  ./testing/vault_app_ids.json:/opt/app-id.json', '-v ./testing/vault_secrets.json:/opt/secrets.json"', '-v ./testing/vault_policies.json:/opt/policies.json']
     working_directory: /go/src/github.com/dollarshaveclub/pvc
     steps:
       - attach_workspace:
           at: .
       - checkout
       - setup_remote_docker
+      - run:
+          name: Start Vault 
+          command: docker run --name vault -d -p 8200:8200 -e "VAULT_USE_APP_ID=1" -v "${PWD}/pvc/testing/vault_app_ids.json:/opt/app-id.json" -v "${PWD}/pvc/testing/vault_secrets.json:/opt/secrets.json" -v "${PWD}/pvc/testing/vault_policies.json:/opt/policies.json" quay.io/dollarshaveclub/vault-dev:master
       - run:
           name: Running tests
           command: go test -v -race -cover
