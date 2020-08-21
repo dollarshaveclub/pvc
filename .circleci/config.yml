@@ -10,13 +10,13 @@ jobs:
           VAULT_TEST_APPID: testing
           VAULT_TEST_USERID: asdf
           VAULT_TEST_TOKEN: root
-          VAULT_DEV_ALREADY_RUNNING: 1
+          VAULT_DEV_ALREADY_RUNNING: 0
     working_directory: /go/src/github.com/dollarshaveclub/pvc
     steps:
       - checkout
       - run: go build 
   test:
-    machine:
+    docker:
       environment:
         VAULT_ADDR: "http://localhost:8200"
         VAULT_TOKEN: root
