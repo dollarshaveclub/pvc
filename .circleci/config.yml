@@ -34,12 +34,13 @@ jobs:
 
         environment: 
           VAULT_USE_APP_ID: 1
-          
-      - checkout
+      working_directory: /go/src/github.com/dollarshaveclub/pvc
+      steps: 
+        - checkout
     
-      - run:
-          name: Running tests
-          command: go test -v -race -cover
+        - run:
+            name: Running tests
+            command: go test -v -race -cover
 
 workflows:
   version: 2
