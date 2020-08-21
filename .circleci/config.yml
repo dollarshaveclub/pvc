@@ -17,7 +17,6 @@ jobs:
       - run: go build 
   test:
     machine:
-      docker_layer_caching: true 
       environment:
         VAULT_ADDR: "http://localhost:8200"
         VAULT_TOKEN: root
