@@ -1,7 +1,7 @@
-version: 2
+version: 2.1
 
-jobs:
-  build:
+executors:
+  gobuild:
     docker:
       - image: circleci/golang:1.14
         environment:
@@ -12,22 +12,43 @@ jobs:
           VAULT_TEST_TOKEN: root
           VAULT_DEV_ALREADY_RUNNING: 1
     working_directory: /go/src/github.com/dollarshaveclub/pvc
-    steps:
-      - checkout
-      - run: go build 
+    
   test:
-    machine:
-      environment:
-        VAULT_ADDR: "http://localhost:8200"
-        VAULT_TOKEN: root
-        VAULT_TEST_APPID: testing
-        VAULT_TEST_USERID: asdf
-        VAULT_TEST_TOKEN: root
-        VAULT_DEV_ALREADY_RUNNING: 1
-      services:
-        - docker
-      post:
-        - docker run --name vault -d -p 8200:8200 -e "VAULT_USE_APP_ID=1" -v "${PWD}/pvc/testing/vault_app_ids.json:/opt/app-id.json" -v "${PWD}/pvc/testing/vault_secrets.json:/opt/secrets.json" -v "${PWD}/pvc/testing/vault_policies.json:/opt/policies.json" quay.io/dollarshaveclub/vault-dev:master
+    docker:
+      - image: circleci/golang:1.14
+        environment:
+          VAULT_ADDR: "http://localhost:8200"
+          VAULT_TOKEN: root
+          VAULT_TEST_APPID: testing
+          VAULT_TEST_USERID: asdf
+          VAULT_TEST_TOKEN: root
+          VAULT_DEV_ALREADY_RUNNING: 1
+    working_directory: /go/src/github.com/dollarshaveclub/pvc
+      - image: quay.io/dollarshaveclub/vault-dev:master
+        environment:
+          VAULT_USE_APP_ID: 1
+          VAULT_SECRETS_FILE: /tmp/opt/secrets.json
+jobs:
+  flow:
+    executor: gobuild
+    steps: 
+      - checkout
+      - run: go build
+      - run: mkdir -p /tmp/opt
+      - run: docker cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json /tmp/opt/secrets.json
+      - persist_to_workspace: 
+          root: /tmp/opt
+          paths:
+            - secrets.json
+     
+  downstream:
+    executor: test
+    steps: 
+      - attach_workspace:
+          at: /tmp/opt
+
+      - run: go test -v -race -cover
+        
     
     steps:
       - checkout
@@ -37,7 +58,11 @@ jobs:
 
 workflows:
   version: 2
-  build_and_test:
-    jobs:
-      - build
-      - test
+
+btd:
+  jobs:
+    - flow:
+    - downstream:
+        requires:
+          - flow 
+          
