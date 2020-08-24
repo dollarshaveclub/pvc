@@ -42,9 +42,7 @@ jobs:
       - attach_workspace:
           at: .
       - run: ls /tmp
-      - run: ls ./tmp
       - run: ls /opt
-      - run: ls ./tmp/opt
       - run: ls ./testing
       # - run: /opt/run.sh
       #   background: true
