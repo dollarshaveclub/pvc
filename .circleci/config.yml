@@ -18,7 +18,6 @@ executors:
       - image: quay.io/dollarshaveclub/vault-dev:master
         environment:
           VAULT_USE_APP_ID: 1
-          VAULT_SECRETS_FILE: /tmp/opt/secrets.json
         
     
 jobs:
@@ -39,7 +38,10 @@ jobs:
     steps: 
       - attach_workspace:
           at: /tmp
-      - run: /opt/run.sh
+      - run: ls /tmp
+      - run: ls /opt
+      # - run: /opt/run.sh
+      #   background: true
 
   test: 
     executor: gobuild
