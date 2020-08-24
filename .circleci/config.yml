@@ -11,21 +11,13 @@ executors:
           VAULT_TEST_USERID: asdf
           VAULT_TEST_TOKEN: root
           VAULT_DEV_ALREADY_RUNNING: 1
-    working_directory: /go/src/github.com/dollarshaveclub/pvc
-    
-  vault:
-    docker:
-      - image: quay.io/dollarshaveclub/vault-dev:master
-        name: vault
-        environment:      
-          VAULT_ADDR: "http://localhost:8200"  
-          VAULT_USE_APP_ID: 1
           VAULT_SECRETS_FILE: /tmp/opt/secrets.json
           VAULT_APP_ID_FILE: /tmp/opt/app_id.json
           VAULT_POLICIES_FILE: /tmp/opt/policies.json
           VAULT_TEST_APPID: testing
           VAULT_TEST_USERID: asdf
           VAULT_TOKEN: root
+    working_directory: /go/src/github.com/dollarshaveclub/pvc
 jobs:
   flow:
     executor: gobuild
@@ -53,17 +45,22 @@ jobs:
       - run: ls /tmp
       - run: ls /opt
       - run: ls /tmp/opt
-      - run: 
-          name: Start Vault
-          command: /opt/run.sh
-          background: true
-      - run: sleep 10
+      # - run: 
+      #     name: Start Vault
+      #     command: /opt/run.sh
+      #     background: true
+      # - run: sleep 10
 
   test: 
     executor: gobuild
     steps:
+      - attach_workspace:
+          at: /tmp/opt
       - checkout
-      - run: sleep 30
+      - setup_remote_docker
+      - run: 
+          command: docker run --name vault -d -p 8200:8200 -e "VAULT_USE_APP_ID=1" -v "${PWD}/pvc/testing/vault_app_ids.json:/opt/app-id.json" -v "${PWD}/pvc/testing/vault_secrets.json:/opt/secrets.json" -v "${PWD}/pvc/testing/vault_policies.json:/opt/policies.json" quay.io/dollarshaveclub/vault-dev:master
+          background: true
       - run: go test -v -race -cover
 
 workflows:
