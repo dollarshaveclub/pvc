@@ -15,11 +15,10 @@ executors:
     
   vault:
     docker:
-
       - image: quay.io/dollarshaveclub/vault-dev:master
         environment:
           VAULT_USE_APP_ID: 1
-          VAULT_SECRETS_FILE: /tmp/opt/secrets.json
+          VAULT_SECRETS_FILE: /tmp/opt/secrets.jsomn
     
 jobs:
   flow:
@@ -41,10 +40,7 @@ jobs:
           at: /tmp/opt
       - run: echo "Downstream"
   
-  test: 
-    executor: gobuild
-    steps:
-      - run: go test -v -race -cover 
+ 
 
 workflows:
   version: 2
@@ -52,9 +48,7 @@ workflows:
 btd:
   jobs:
     - flow:
-    - vault:
+    - downstream:
         requires:
           - flow 
-    - test:
-        requires:
-          - vault 
+    
