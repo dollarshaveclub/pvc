@@ -27,7 +27,9 @@ jobs:
       - checkout
       - run: go build
       - run: mkdir -p /tmp/opt
-      - run: docker cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json /tmp/opt/secrets.json
+      - run: ls ./testing
+      - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json /tmp/opt/secrets.json
+      - run: ls /tmp
       - persist_to_workspace: 
           root: /tmp/opt
           paths:
