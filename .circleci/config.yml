@@ -14,9 +14,6 @@ executors:
           VAULT_SECRETS_FILE: /tmp/opt/secrets.json
           VAULT_APP_ID_FILE: /tmp/opt/app_id.json
           VAULT_POLICIES_FILE: /tmp/opt/policies.json
-          VAULT_TEST_APPID: testing
-          VAULT_TEST_USERID: asdf
-          VAULT_TOKEN: root
     working_directory: /go/src/github.com/dollarshaveclub/pvc
 jobs:
   flow:
