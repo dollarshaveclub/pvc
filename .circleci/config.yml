@@ -23,11 +23,12 @@ executors:
           VAULT_TEST_USERID: asdf
           VAULT_TEST_TOKEN: root
           VAULT_DEV_ALREADY_RUNNING: 1
-    working_directory: /go/src/github.com/dollarshaveclub/pvc
+
       - image: quay.io/dollarshaveclub/vault-dev:master
         environment:
           VAULT_USE_APP_ID: 1
           VAULT_SECRETS_FILE: /tmp/opt/secrets.json
+    working_directory: /go/src/github.com/dollarshaveclub/pvc
 jobs:
   flow:
     executor: gobuild
@@ -65,4 +66,3 @@ btd:
     - downstream:
         requires:
           - flow 
-          
