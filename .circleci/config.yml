@@ -48,7 +48,7 @@ jobs:
     executor: gobuild_and_test
     steps: 
       - attach_workspace:
-          at: .
+          at: /tmp/opt
       - checkout
       - run: sleep 30
       - run: go test -v -race -cover
