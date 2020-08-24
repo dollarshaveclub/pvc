@@ -54,12 +54,13 @@ jobs:
       - run: 
           name: Start Vault
           command: /opt/run.sh
-          background: true
+          # background: true
 
   test: 
     executor: gobuild
     steps:
       - checkout
+      - run: sleep 30
       - run: go test -v -race -cover
 
 workflows:
