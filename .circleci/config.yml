@@ -5,7 +5,7 @@ executors:
     docker:
       - image: circleci/golang:1.14
         environment:
-          VAULT_ADDR: "http://localhost:8200"
+          VAULT_ADDR: "http://vault:8200"
           VAULT_TOKEN: root
           VAULT_TEST_APPID: testing
           VAULT_TEST_USERID: asdf
@@ -17,7 +17,11 @@ executors:
     docker:
       - image: quay.io/dollarshaveclub/vault-dev:master
         environment:
+        name: vault
           VAULT_USE_APP_ID: 1
+          VAULT_SECRETS_FILE: /tmp/opt/secrets.json
+          VAULT_APP_ID_FILE: /tmp/opt/app-id.json
+          VAULT_POLICIES_FILE: /tmp/opt/policies.json
         
     
 jobs:
@@ -29,12 +33,15 @@ jobs:
       - run: mkdir -p /tmp/opt
       - run: ls ./testing
       - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json /tmp/opt/secrets.json
-      - run: ls /tmp
+      - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_app_ids.json /tmp/opt/app-id.json
+      - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_policies.json /tmp/opt/policies.json
       - run: ls /tmp/opt
       - persist_to_workspace: 
           root: /tmp/opt
           paths:
             - secrets.json
+            - policies.json
+            - app-id.json
      
   downstream:
     executor: vault
@@ -44,8 +51,8 @@ jobs:
       - run: ls /tmp
       - run: ls /opt
       - run: ls /tmp/opt
-      # - run: /opt/run.sh
-      #   background: true
+      - run: /opt/run.sh
+        background: true
 
   test: 
     executor: gobuild
