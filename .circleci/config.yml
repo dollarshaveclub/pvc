@@ -43,6 +43,7 @@ jobs:
   
   test: 
     executor: gobuild
+    steps:
       - run: go test -v -race -cover 
 
 workflows:
