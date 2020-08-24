@@ -30,15 +30,15 @@ executors:
     working_directory: /go/src/github.com/dollarshaveclub/pvc
 jobs:
   copy: 
-    executor: 
+    executor: copy_vault_testing_files
       steps: 
         - checkout
         - persist_to_workspace: 
-          root: /go/src/github.com/dollarshaveclub/pvc/testing
-          paths:
-            - vault_secrets.json
-            - vault_app_ids.json
-            - vault_policies.json
+            root: /go/src/github.com/dollarshaveclub/pvc/testing
+            paths:
+              - vault_secrets.json
+              - vault_app_ids.json
+              - vault_policies.json
      
   test:
     executor: gobuild_and_test
