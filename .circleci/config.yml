@@ -54,7 +54,8 @@ jobs:
       - run: 
           name: Start Vault
           command: /opt/run.sh
-          # background: true
+          background: true
+      - run: sleep 10
 
   test: 
     executor: gobuild
