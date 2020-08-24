@@ -51,8 +51,10 @@ jobs:
       - run: ls /tmp
       - run: ls /opt
       - run: ls /tmp/opt
-      - run: /opt/run.sh
-        background: true
+      - run: 
+          name: Start Vault
+          command: /opt/run.sh
+          background: true
 
   test: 
     executor: gobuild
