@@ -1,7 +1,7 @@
 version: 2.1
 
 executors:
-  gobuild:
+  gobuild_and_test:
     docker:
       - image: circleci/golang:1.14
         environment:
@@ -25,15 +25,10 @@ executors:
    working_directory: /go/src/github.com/dollarshaveclub/pvc
 jobs:
   flow:
-    executor: gobuild
+    executor: gobuild_and_test
     steps: 
       - checkout
-      - run: go build    
-
-  test: 
-    executor: gobuild
-    steps:
-      - checkout
+      - run: go build
       - run: sleep 30
       - run: go test -v -race -cover
 
@@ -43,7 +38,3 @@ workflows:
   btd:
     jobs:
       - flow
-      - test:
-          requires:
-            - flow
-      
