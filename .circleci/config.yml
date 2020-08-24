@@ -5,53 +5,36 @@ executors:
     docker:
       - image: circleci/golang:1.14
         environment:
-          VAULT_ADDR: "http://localhost:8200"
+          VAULT_ADDR: "http://vault:8200"
           VAULT_TOKEN: root
           VAULT_TEST_APPID: testing
           VAULT_TEST_USERID: asdf
           VAULT_TEST_TOKEN: root
           VAULT_DEV_ALREADY_RUNNING: 1
-          VAULT_SECRETS_FILE: /tmp/opt/secrets.json
-          VAULT_APP_ID_FILE: /tmp/opt/app_id.json
-          VAULT_POLICIES_FILE: /tmp/opt/policies.json
       - image: quay.io/dollarshaveclub/vault-dev:master
         name: vault
-        environment:
-          VAULT_ADDR: "http://localhost:8200"
-          VAULT_TOKEN: root
+        environment:      
+          VAULT_ADDR: "http://0.0.0.0:8200"  
+          VAULT_USE_APP_ID: 1
+          VAULT_SECRETS_FILE: /go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json
+          VAULT_APP_ID_FILE: /go/src/github.com/dollarshaveclub/pvc/testing/vault_app_ids.json
+          VAULT_POLICIES_FILE: /go/src/github.com/dollarshaveclub/pvc/testing/vault_policies.json
           VAULT_TEST_APPID: testing
           VAULT_TEST_USERID: asdf
-          VAULT_TEST_TOKEN: root
-          VAULT_DEV_ALREADY_RUNNING: 1
-          VAULT_SECRETS_FILE: /tmp/opt/secrets.json
-          VAULT_APP_ID_FILE: /tmp/opt/app_id.json
-          VAULT_POLICIES_FILE: /tmp/opt/policies.json
-        entrypoint: /opt/run.sh
-    working_directory: /go/src/github.com/dollarshaveclub/pvc
+          VAULT_TOKEN: root
+   working_directory: /go/src/github.com/dollarshaveclub/pvc
 jobs:
   flow:
     executor: gobuild
     steps: 
       - checkout
-      - run: go build
-      - run: mkdir -p /tmp/opt
-      - run: ls ./testing
-      - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json /tmp/opt/secrets.json
-      - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_app_ids.json /tmp/opt/app_id.json
-      - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_policies.json /tmp/opt/policies.json
-      - run: ls /tmp/opt
-      - persist_to_workspace: 
-          root: /tmp/opt
-          paths:
-            - secrets.json
-            - policies.json
-            - app_id.json
+      - run: go build    
+
   test: 
     executor: gobuild
     steps:
-      - attach_workspace:
-          at: /tmp/opt
       - checkout
+      - run: sleep 30
       - run: go test -v -race -cover
 
 workflows:
@@ -63,4 +46,4 @@ workflows:
       - test:
           requires:
             - flow
-    
+      
