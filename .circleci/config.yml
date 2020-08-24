@@ -1,11 +1,16 @@
 version: 2.1
 
 executors:
+  copy_vault_testing_files:
+    docker: 
+      - image: circleci/golang:1.14
+    working_directory: /go/src/github.com/dollarshaveclub/pvc
+
   gobuild_and_test:
     docker:
       - image: circleci/golang:1.14
         environment:
-          VAULT_ADDR: "http://vault:8200"
+          VAULT_ADDR: "http://localhost:8200"
           VAULT_TOKEN: root
           VAULT_TEST_APPID: testing
           VAULT_TEST_USERID: asdf
@@ -24,13 +29,23 @@ executors:
           VAULT_TOKEN: root
     working_directory: /go/src/github.com/dollarshaveclub/pvc
 jobs:
-  flow:
+  copy: 
+    executor: 
+      steps: 
+        - checkout
+        - persist_to_workspace: 
+          root: /go/src/github.com/dollarshaveclub/pvc/testing
+          paths:
+            - vault_secrets.json
+            - vault_app_ids.json
+            - vault_policies.json
+     
+  test:
     executor: gobuild_and_test
     steps: 
       - attach_workspace:
-          at: /go/src/github.com/dollarshaveclub/pvc
+          at: /go/src/github.com/dollarshaveclub/pvc/testing
       - checkout
-      - run: go build
       - run: sleep 30
       - run: go test -v -race -cover
 
@@ -39,4 +54,4 @@ workflows:
 
   btd:
     jobs:
-      - flow
+      - test
