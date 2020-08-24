@@ -16,8 +16,8 @@ executors:
   vault:
     docker:
       - image: quay.io/dollarshaveclub/vault-dev:master
-        environment:
         name: vault
+        environment:        
           VAULT_USE_APP_ID: 1
           VAULT_SECRETS_FILE: /tmp/opt/secrets.json
           VAULT_APP_ID_FILE: /tmp/opt/app-id.json
