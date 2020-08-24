@@ -30,10 +30,11 @@ jobs:
       - run: ls ./testing
       - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json /tmp/opt/secrets.json
       - run: ls /tmp
+      - run: ls /tmp/opt
       - persist_to_workspace: 
-          root: /tmp/opt
+          root: ./testing
           paths:
-            - secrets.json
+            - vault_secrets.json
      
   downstream:
     executor: vault
@@ -41,7 +42,10 @@ jobs:
       - attach_workspace:
           at: .
       - run: ls /tmp
+      - run: ls ./tmp
       - run: ls /opt
+      - run: ls ./tmp/opt
+      - run: ls ./testing
       # - run: /opt/run.sh
       #   background: true
 
