@@ -22,7 +22,7 @@ executors:
           VAULT_TEST_APPID: testing
           VAULT_TEST_USERID: asdf
           VAULT_TOKEN: root
-   working_directory: /go/src/github.com/dollarshaveclub/pvc
+    working_directory: /go/src/github.com/dollarshaveclub/pvc
 jobs:
   flow:
     executor: gobuild_and_test
