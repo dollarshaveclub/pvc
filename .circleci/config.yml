@@ -27,7 +27,7 @@ jobs:
       - checkout
       - run: go build
       - run: mkdir -p /tmp/opt
-      - run: docker cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json /tmp/opt/secrets.json
+      - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json /tmp/opt/secrets.json
       - persist_to_workspace: 
           root: /tmp/opt
           paths:
@@ -37,7 +37,7 @@ jobs:
     executor: vault
     steps: 
       - attach_workspace:
-          at: /tmp/opt
+          at: .
       - run: echo "Downstream"
   
  
@@ -45,10 +45,10 @@ jobs:
 workflows:
   version: 2
 
-btd:
-  jobs:
-    - flow:
-    - downstream:
-        requires:
-          - flow 
+  btd:
+    jobs:
+      - flow:
+      - downstream:
+          requires:
+            - flow 
     
