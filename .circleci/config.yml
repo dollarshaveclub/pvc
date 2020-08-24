@@ -40,10 +40,10 @@ jobs:
     executor: vault
     steps: 
       - attach_workspace:
-          at: .
+          at: /go/src/github.com/dollarshaveclub/pvc/testing
       - run: ls /tmp
       - run: ls /opt
-      - run: ls ./testing
+      - run: ls .
       # - run: /opt/run.sh
       #   background: true
 
