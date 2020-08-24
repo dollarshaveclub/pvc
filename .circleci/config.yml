@@ -27,6 +27,8 @@ jobs:
   flow:
     executor: gobuild_and_test
     steps: 
+      attach_workspace:
+        at: /go/src/github.com/dollarshaveclub/pvc
       - checkout
       - run: go build
       - run: sleep 30
