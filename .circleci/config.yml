@@ -32,7 +32,7 @@ jobs:
       - run: ls /tmp
       - run: ls /tmp/opt
       - persist_to_workspace: 
-          root: ./testing
+          root: /go/src/github.com/dollarshaveclub/pvc/testing
           paths:
             - vault_secrets.json
      
@@ -43,7 +43,7 @@ jobs:
           at: /go/src/github.com/dollarshaveclub/pvc/testing
       - run: ls /tmp
       - run: ls /opt
-      - run: ls .
+      - run: ls /go/src/github.com/dollarshaveclub/pvc/testing
       # - run: /opt/run.sh
       #   background: true
 
