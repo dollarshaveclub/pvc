@@ -21,9 +21,9 @@ executors:
         environment:      
           VAULT_ADDR: "http://0.0.0.0:8200"  
           VAULT_USE_APP_ID: 1
-          VAULT_SECRETS_FILE: /tmp/opt/vault_secrets.json
-          VAULT_APP_ID_FILE: /tmp/opt/vault_app_ids.json
-          VAULT_POLICIES_FILE: /tmp/opt/vault_policies.json
+          VAULT_SECRETS_FILE: vault_secrets.json
+          VAULT_APP_ID_FILE: vault_app_ids.json
+          VAULT_POLICIES_FILE: vault_policies.json
           VAULT_TEST_APPID: testing
           VAULT_TEST_USERID: asdf
           VAULT_TOKEN: root
