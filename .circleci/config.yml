@@ -34,19 +34,7 @@ jobs:
             - policies.json
             - app_id.json
      
-  downstream:
-    executor: vault
-    steps: 
-      - attach_workspace:
-          at: /tmp/opt
-      - run: ls /tmp
-      - run: ls /opt
-      - run: ls /tmp/opt
-      # - run: 
-      #     name: Start Vault
-      #     command: /opt/run.sh
-      #     background: true
-      # - run: sleep 10
+
 
   test: 
     executor: gobuild
@@ -66,10 +54,7 @@ workflows:
   btd:
     jobs:
       - flow
-      - downstream:
-          requires:
-            - flow 
       - test:
           requires:
-            - downstream
+            - flow
     
