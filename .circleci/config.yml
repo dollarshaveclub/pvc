@@ -42,16 +42,19 @@ jobs:
      
   test:
     executor: gobuild_and_test
-    steps: 
-      - attach_workspace:
-          at: /go/src/github.com/dollarshaveclub/pvc/testing
-      - checkout
-      - run: sleep 30
-      - run: go test -v -race -cover
+      steps: 
+        - attach_workspace:
+            at: /go/src/github.com/dollarshaveclub/pvc/testing
+        - checkout
+        - run: sleep 30
+        - run: go test -v -race -cover
 
 workflows:
   version: 2
 
   btd:
     jobs:
-      - test
+      - copy
+      - test:
+          requires:
+            - copy
