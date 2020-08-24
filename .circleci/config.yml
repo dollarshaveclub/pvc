@@ -20,7 +20,7 @@ executors:
         environment:        
           VAULT_USE_APP_ID: 1
           VAULT_SECRETS_FILE: /tmp/opt/secrets.json
-          VAULT_APP_ID_FILE: /tmp/opt/app-id.json
+          VAULT_APP_ID_FILE: /tmp/opt/app_id.json
           VAULT_POLICIES_FILE: /tmp/opt/policies.json
         
     
@@ -33,7 +33,7 @@ jobs:
       - run: mkdir -p /tmp/opt
       - run: ls ./testing
       - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json /tmp/opt/secrets.json
-      - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_app_ids.json /tmp/opt/app-id.json
+      - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_app_ids.json /tmp/opt/app_id.json
       - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_policies.json /tmp/opt/policies.json
       - run: ls /tmp/opt
       - persist_to_workspace: 
@@ -41,7 +41,7 @@ jobs:
           paths:
             - secrets.json
             - policies.json
-            - app-id.json
+            - app_id.json
      
   downstream:
     executor: vault
