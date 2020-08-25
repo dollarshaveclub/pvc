@@ -34,11 +34,13 @@ jobs:
           root: /tmp/opt
           paths:
             - secrets.json
+            - app-id.json
+            - policies.json
   test:
     executor: gobuild_and_test
     steps: 
-      # - attach_workspace:
-      #     at: /tmp/opt
+      - attach_workspace:
+          at: /tmp/opt
       - run: go version
       - run: sudo rm -rf /usr/local/go
       - checkout
@@ -51,9 +53,10 @@ jobs:
       - run: export PATH=${PATH}:${GOROOT}/bin:${GOBIN}
       - run: go version
       - run: echo $HOME
+      - run: cat /tmp/opt/app-id.json
       - run:
           name: Start Vault
-          command: docker run --name vault -d -p 8200:8200 -e "VAULT_USE_APP_ID=1" -v "${HOME}/go/src/github.com/dollarshaveclub/pvc/testing/vault_app_ids.json:/opt/app-id.json" -v "${HOME}/go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json:/opt/secrets.json" -v "${HOME}/go/src/github.com/dollarshaveclub/pvc/testing/vault_policies.json:/opt/policies.json" quay.io/dollarshaveclub/vault-dev:master
+          command: docker run --name vault -d -p 8200:8200 -e "VAULT_USE_APP_ID=1" -v "/tmp/opt/app-id.json:/opt/app-id.json" -v "/tmp/opt/secrets.json:/opt/secrets.json" -v "${HOME}/go/src/github.com/dollarshaveclub/pvc/testing/vault_policies.json:/opt/policies.json" quay.io/dollarshaveclub/vault-dev:master
       - run: ls .
       - run: go mod vendor      
       - run: export VAULT_ADDR="http://localhost:8200" && export VAULT_TOKEN=root && export VAULT_TEST_APPID=testing && export VAULT_TEST_USERID=asdf && VAULT_TEST_TOKEN=root && VAULT_DEV_ALREADY_RUNNING=1 && go test -v -race -cover
@@ -63,5 +66,8 @@ workflows:
 
   btd:
     jobs:
-      - test
+      - copy
+      - test:
+          requires:
+            - copy
           
