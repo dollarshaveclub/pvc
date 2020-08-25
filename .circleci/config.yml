@@ -48,11 +48,10 @@ jobs:
       - run:
           name: Start Vault
           command: docker run --name vault -d -p 8200:8200 -e "VAULT_USE_APP_ID=1" -v "~/go/src/github.com/dollarshaveclub/pvc/testing/vault_app_ids.json:/opt/app-id.json" -v "${PWD}/testing/vault_secrets.json:/opt/secrets.json" -v "/tmp/opt/vault_policies.json:/opt/policies.json" quay.io/dollarshaveclub/vault-dev:master
-          background: true
       - run: ls .
       - run: ls /tmp/opt
-     
-      - run: go install
+      - run: go get -t -d -v ./...
+      - run: go build
       - run: go test -v -race -cover
 
 workflows:
