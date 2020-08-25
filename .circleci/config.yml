@@ -41,7 +41,6 @@ jobs:
       #     at: /tmp/opt
       - run: go version
       - checkout
-      - run: sudo apt-get remove go
       - run: sudo apt-get update
 
       - run: wget https://golang.org/doc/install?download=go1.15.linux-amd64.tar.gz
