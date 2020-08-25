@@ -24,12 +24,11 @@ executors:
           VAULT_USE_APP_ID: 1
           VAULT_SECRETS_FILE: /tmp/opt/vault_secrets.json
           VAULT_APP_ID_FILE: /tmp/opt/vault_app_ids.json
-          VAULT_POLICIES_FILE: /tmp/opt/vault_policies.json
+          #VAULT_POLICIES_FILE: /tmp/opt/vault_policies.json
           VAULT_TEST_APPID: testing
           VAULT_TEST_USERID: asdf
           VAULT_TOKEN: root
-        command: |
-          'ls . && ls /tmp && echo $PWD'
+        command: /opt/run.sh -daemon -port 8200 -host 0.0.0.0 -v /go/src/github.com/dollarshaveclub/pvc/testing/vault_policies.json:/opt/policies.json
         
     working_directory: /go/src/github.com/dollarshaveclub/pvc
 jobs:
