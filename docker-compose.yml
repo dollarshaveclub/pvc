@@ -1,0 +1,24 @@
+version: "2"
+
+services:
+  pvc:
+    build: .
+    container_name: pvc
+    environment:
+      VAULT_ADDR: "http://vault:8200"
+      VAULT_TOKEN: root
+      VAULT_TEST_APPID: testing
+      VAULT_TEST_USERID: asdf
+      VAULT_TEST_TOKEN: root
+      VAULT_DEV_ALREADY_RUNNING: 1
+    
+
+  vault:
+    image: quay.io/dollarshaveclub/vault-dev:master
+    environment:
+      VAULT_API_ADDR: "http://0.0.0.0:8200"
+      VAULT_ADDR: "http://0.0.0.0:8200"
+      VAULT_USE_APP_ID: 1
+      VAULT_TEST_APPID: testing
+      VAULT_TEST_USERID: asdf
+      VAULT_TOKEN: root
