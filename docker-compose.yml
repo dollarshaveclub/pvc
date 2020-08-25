@@ -1,4 +1,4 @@
-version: "2"
+version: "2.1"
 
 services:
   pvc:
@@ -22,3 +22,9 @@ services:
       VAULT_TEST_APPID: testing
       VAULT_TEST_USERID: asdf
       VAULT_TOKEN: root
+    ports:
+      - "8200:8200"
+    volumes:
+      - "$PWD/testing/vault_secrets.json:/opt/secrets.json"
+      - "$PWD/testing/vault_app_ids.json:/opt/app-id.json"
+      - "$PWD/testing/vault_policies.json:/opt/policies.json"

@@ -41,16 +41,16 @@ jobs:
       - run:
           name: Install Docker Compose
           command: |
-            set -x
-            curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-            chmod +x /usr/local/bin/docker-compose
+            curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
       - run:
           name: Start Vault
           command: |
             set -x
             docker-compose up -d
             # docker-compose will start 2 containers, the one with service will be named `contacts`
-            # we start another container with curl in the same network as `contacts`, this way we have
+            # we start another container with curl in the same network as `vault`, this way we have
             # all exposed ports from `vault` available on `localhost` in this new container
             docker run --network container:vault \
               appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:8200
