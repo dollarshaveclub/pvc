@@ -25,9 +25,9 @@ executors:
           VAULT_TEST_APPID: testing
           VAULT_TEST_USERID: asdf
           VAULT_TOKEN: root
-          VAULT_SECRETS_FILE: /tmp/secrets.json
-        command: |
-          docker cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json /tmp/secrets.json
+          VAULT_SECRETS_FILE: ./testing/vault_secrets.json
+        # command: |
+        #   docker cp ./testing/vault_secrets.json /opt/secrets.json
     
     working_directory: /go/src/github.com/dollarshaveclub/pvc
 jobs:
