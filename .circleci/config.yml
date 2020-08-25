@@ -37,19 +37,17 @@ jobs:
   test:
     executor: gobuild_and_test
     steps: 
-      - attach_workspace:
-          at: /tmp/opt
+      # - attach_workspace:
+      #     at: /tmp/opt
       - checkout
       - run: ls .
-      - run: cat /tmp/opt/secrets.json
       - run: 
           name: Set Env Vars
           command: export VAULT_ADDR="http://localhost:8200" && export VAULT_TOKEN=root && export VAULT_TEST_APPID=testing && export VAULT_TEST_USERID=asdf && VAULT_TEST_TOKEN=root && VAULT_DEV_ALREADY_RUNNING=1
       - run:
           name: Start Vault
-          command: docker run --name vault -d -p 8200:8200 -e "VAULT_USE_APP_ID=1" -v "~/go/src/github.com/dollarshaveclub/pvc/testing/vault_app_ids.json:/opt/app-id.json" -v "${PWD}/testing/vault_secrets.json:/opt/secrets.json" -v "/tmp/opt/vault_policies.json:/opt/policies.json" quay.io/dollarshaveclub/vault-dev:master
+          command: docker run --name vault -d -p 8200:8200 -e "VAULT_USE_APP_ID=1" -v "${PWD}/testing/vault_app_ids.json:/opt/app-id.json" -v "${PWD}/testing/vault_secrets.json:/opt/secrets.json" -v "${PWD}/testing/vault_policies.json:/opt/policies.json" quay.io/dollarshaveclub/vault-dev:master
       - run: ls .
-      - run: ls /tmp/opt
       - run: go get -t -d -v ./...
       - run: go build
       - run: go test -v -race -cover
@@ -59,8 +57,5 @@ workflows:
 
   btd:
     jobs:
-      - copy
-      - test:
-          requires:
-            - copy
+      - test
           
