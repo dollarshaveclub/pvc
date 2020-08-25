@@ -1,41 +1,61 @@
-version: 2
+version: 2.1
 
+executors:
+  copy_vault_testing_files:
+    docker: 
+      - image: circleci/golang:1.14    
+    working_directory: /go/src/github.com/dollarshaveclub/pvc
+
+  gobuild_and_test:
+    machine:
+      image: ubuntu-1604:201903-01
+      docker_layer_caching: true       
+    working_directory: ~/go/src/github.com/dollarshaveclub/pvc
 jobs:
-  build:
-    docker:
-      - image: circleci/golang:1.14
-        environment:
-          VAULT_ADDR: "http://localhost:8200"
-          VAULT_TOKEN: root
-          VAULT_TEST_TOKEN: root
-          VAULT_DEV_ALREADY_RUNNING: 1
-    working_directory: /go/src/github.com/dollarshaveclub/pvc
+  copy:
+    executor: copy_vault_testing_files
     steps:
       - checkout
-      - run: go build 
+      - run: mkdir -p /tmp/opt
+      - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json /tmp/opt/secrets.json
+      - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_app_ids.json /tmp/opt/app-id.json
+      - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_policies.json /tmp/opt/policies.json
+      - persist_to_workspace:
+          root: /tmp/opt
+          paths:
+            - secrets.json
+            - app-id.json
+            - policies.json
   test:
-    docker:
-      - image: circleci/golang:1.14
-        environment:
-          VAULT_ADDR: "http://vault:8200"
-          VAULT_TEST_TOKEN: root
-          VAULT_DEV_ALREADY_RUNNING: 1
-      - image: quay.io/dollarshaveclub/vault-dev:master
-        name: vault
-        environment:
-          VAULT_API_ADDR: "http://0.0.0.0:8200"
-          VAULT_SECRETS_FILE: /go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json
-          VAULT_POLICIES_FILE: /go/src/github.com/dollarshaveclub/pvc/testing/vault_policies.json
-    working_directory: /go/src/github.com/dollarshaveclub/pvc
-    steps:
+    executor: gobuild_and_test
+    steps: 
+      - attach_workspace:
+          at: /tmp/opt
+      - run: go version
+      - run: sudo rm -rf /usr/local/go
       - checkout
+      - run: sudo apt-get update
+      - run: wget https://golang.org/dl/go1.14.linux-amd64.tar.gz
+      - run: sudo tar -xvf go1.14.linux-amd64.tar.gz -C /usr/local 
+      - run: export GOBIN="${HOME}/go/bin"
+      - run: sudo mkdir -p "${HOME}/go"
+      - run: sudo mkdir -p "${HOME}/go/bin"
+      - run: export PATH=${PATH}:${GOROOT}/bin:${GOBIN}
+      - run: go version
+      - run: go build
       - run:
-          name: Running tests
-          command: go test -v -race -cover
+          name: Start Vault
+          command: docker run --name vault -d -p 8200:8200 -e "VAULT_API_ADDR=http://0.0.0.0:8200" -v "/tmp/opt/app-id.json:/opt/app-id.json" -v "/tmp/opt/secrets.json:/opt/secrets.json" -v "${HOME}/go/src/github.com/dollarshaveclub/pvc/testing/vault_policies.json:/opt/policies.json" quay.io/dollarshaveclub/vault-dev:master
+      - run: ls .    
+      - run: export VAULT_ADDR="http://localhost:8200" && VAULT_TEST_TOKEN=root && VAULT_DEV_ALREADY_RUNNING=1 && go test -v -race -cover
 
 workflows:
   version: 2
-  build_and_test:
+
+  btd:
     jobs:
-      - build
-      - test
+      - copy
+      - test:
+          requires:
+            - copy
+          
