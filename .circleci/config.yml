@@ -20,7 +20,7 @@ executors:
       #   VAULT_DEV_ALREADY_RUNNING: 1
       #   VAULT_API_ADDR: "http://0.0.0.0:8200"
       #   VAULT_SECRETS_FILE: /go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json       
-    
+    working_directory: /go/src/github.com/dollarshaveclub/pvc
 jobs:
   copy:
     executor: copy_vault_testing_files
@@ -28,6 +28,8 @@ jobs:
       - checkout
       - run: mkdir -p /tmp/opt
       - run: cp testing/vault_secrets.json /tmp/opt/secrets.json
+      - run: cp testing/vault_app_ids.json /tmp/opt/app-id.json
+      - run: cp testing/vault_policies.json /tmp/opt/policies.json
       - persist_to_workspace:
           root: /tmp/opt
           paths:
@@ -40,13 +42,12 @@ jobs:
       - checkout
       - run: ls .
       - run: cat /tmp/opt/secrets.json
-      - setup_remote_docker
       - run: 
           name: Set Env Vars
           command: export VAULT_ADDR="http://localhost:8200" && export VAULT_TOKEN=root && export VAULT_TEST_APPID=testing && export VAULT_TEST_USERID=asdf && VAULT_TEST_TOKEN=root && VAULT_DEV_ALREADY_RUNNING=1
       - run:
           name: Start Vault
-          command: docker run --name vault -d -p 8200:8200 -e "VAULT_USE_APP_ID=1" -v "/go/src/github.com/dollarshaveclub/pvc/testing/vault_app_ids.json:/opt/app-id.json" -v "${PWD}/testing/vault_secrets.json:/opt/secrets.json" -v "${PWD}/testing/vault_policies.json:/opt/policies.json" quay.io/dollarshaveclub/vault-dev:master
+          command: docker run --name vault -d -p 8200:8200 -e "VAULT_USE_APP_ID=1" -v "/go/src/github.com/dollarshaveclub/pvc/testing/vault_app_ids.json:/opt/app-id.json" -v "${PWD}/testing/vault_secrets.json:/opt/secrets.json" -v "/tmp/opt/vault_policies.json:/opt/policies.json" quay.io/dollarshaveclub/vault-dev:master
           background: true
       - run: ls .
       - run: ls /tmp/opt
