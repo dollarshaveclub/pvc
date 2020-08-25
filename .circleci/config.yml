@@ -45,5 +45,5 @@ workflows:
 
   btd:
     jobs:
-      - test:
+      - test
           
