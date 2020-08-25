@@ -49,8 +49,7 @@ jobs:
           name: Start Vault
           command: docker run --name vault -d -p 8200:8200 -e "VAULT_API_ADDR=http://0.0.0.0:8200" -v "/tmp/opt/secrets.json:/opt/secrets.json" -v "/tmp/opt/policies:/opt/policies.json" quay.io/dollarshaveclub/vault-dev:master
       - run: ls .    
-      - run: export VAULT_ADDR="http://localhost:8200" && VAULT_TEST_TOKEN="root" && VAULT_DEV_ALREADY_RUNNING=1 && go test -v -race -cover
-
+      - run: export VAULT_ADDR="http://localhost:8200" && export VAULT_TEST_TOKEN=root && export VAULT_DEV_ALREADY_RUNNING=1 && go test -v -race -cover
 workflows:
   version: 2
 
