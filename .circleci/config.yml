@@ -26,6 +26,7 @@ executors:
           VAULT_TEST_USERID: asdf
           VAULT_TOKEN: root
         command: | 
+          echo "hi"
           echo '"{
                     "tpol": "path \"secret/*\" { policy = \"write\" }"
                  }"' > /opt/policies.json
@@ -42,7 +43,7 @@ executors:
                     }
                   ]
                   "' > /opt/app-id.json
-        
+        entrypoint: /opt/run.sh
     working_directory: /go/src/github.com/dollarshaveclub/pvc
 jobs:
   copy: 
@@ -63,13 +64,13 @@ jobs:
   test:
     executor: gobuild_and_test
     steps: 
+      - checkout
       - attach_workspace:
           at: /tmp/opt
       - run: ls .
       - run: ls /tmp
       - run: ls /opt
       - run: ls /tmp/opt
-      - checkout
       - run: sleep 30
       - run: go test -v -race -cover
 
