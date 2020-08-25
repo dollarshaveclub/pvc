@@ -16,54 +16,28 @@ executors:
           VAULT_TEST_USERID: asdf
           VAULT_TEST_TOKEN: root
           VAULT_DEV_ALREADY_RUNNING: 1
+      - image: quay.io/dollarshaveclub/vault-dev:master
+        name: vault
+        environment:
+          VAULT_API_ADDR: "http://0.0.0.0:8200"
+          VAULT_ADDR: "http://0.0.0.0:8200"
+          VAULT_USE_APP_ID: 1
+          VAULT_TEST_APPID: testing
+          VAULT_TEST_USERID: asdf
+          VAULT_TOKEN: root
+          VAULT_SECRETS_FILE: /tmp/secrets.json
+        command: |
+          docker cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json /tmp/secrets.json
     
     working_directory: /go/src/github.com/dollarshaveclub/pvc
 jobs:
-  copy: 
-    executor: copy_vault_testing_files
-    steps: 
-      - checkout
-      - run: mkdir -p /tmp/opt
-      - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_policies.json /tmp/opt/vault_policies.json
-      - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_app_ids.json /tmp/opt/vault_app_ids.json
-      - run: cp /go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json /tmp/opt/vault_secrets.json
-      - persist_to_workspace: 
-          root: /tmp/opt
-          paths:
-            - vault_secrets.json
-            - vault_app_ids.json
-            - vault_policies.json
-    
+      
   test:
     executor: gobuild_and_test
     steps: 
       - checkout
-      - attach_workspace:
-          at: /tmp/opt
       - run: ls .
       - run: ls /tmp
-      - run: ls /opt
-      - run: ls /tmp/opt
-      - setup_remote_docker
-      # This should go into custom primary image, here's only for the sake of explanation
-      - run:
-          name: Install Docker Compose
-          command: |
-            curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-            chmod +x ~/docker-compose
-            sudo mv ~/docker-compose /usr/local/bin/docker-compose
-      - run:
-          name: Start Vault
-          command: |
-            set -x
-            docker-compose up -d
-            # docker-compose will start 2 containers, the one with service will be named `contacts`
-            # we start another container with curl in the same network as `vault`, this way we have
-            # all exposed ports from `vault` available on `localhost` in this new container
-            docker run --network container:vault \
-              appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:8200
-
-
       - run: go test -v -race -cover
 
 workflows:
@@ -71,7 +45,5 @@ workflows:
 
   btd:
     jobs:
-      - copy
       - test:
-          requires:
-            - copy
+          
