@@ -26,7 +26,12 @@ jobs:
     executor: copy_vault_testing_files
     steps:
       - checkout
+      - run: mkdir -p /tmp/opt
       - run: cp testing/vault_secrets.json /tmp/opt/secrets.json
+      - persist_to_workspace:
+          root: /tmp/opt
+          paths:
+            - secrets.json
   test:
     executor: gobuild_and_test
     steps: 
