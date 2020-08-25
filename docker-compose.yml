@@ -15,6 +15,7 @@ services:
 
   vault:
     image: quay.io/dollarshaveclub/vault-dev:master
+    container_name: vault
     environment:
       VAULT_API_ADDR: "http://0.0.0.0:8200"
       VAULT_ADDR: "http://0.0.0.0:8200"
