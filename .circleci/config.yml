@@ -20,7 +20,7 @@ executors:
       #   VAULT_DEV_ALREADY_RUNNING: 1
       #   VAULT_API_ADDR: "http://0.0.0.0:8200"
       #   VAULT_SECRETS_FILE: /go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json       
-    working_directory: /go/src/github.com/dollarshaveclub/pvc
+    
 jobs:
   copy:
     executor: copy_vault_testing_files
