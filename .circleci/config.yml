@@ -56,7 +56,7 @@ jobs:
       - run: cat /tmp/opt/app-id.json
       - run:
           name: Start Vault
-          command: docker run --name vault -p 8200:8200 -e "VAULT_API_ADDR=http://0.0.0.0:8200" -v "/tmp/opt/app-id.json:/opt/app-id.json" -v "/tmp/opt/secrets.json:/opt/secrets.json" -v "${HOME}/go/src/github.com/dollarshaveclub/pvc/testing/vault_policies.json:/opt/policies.json" quay.io/dollarshaveclub/vault-dev:master
+          command: docker run --name vault -d -p 8200:8200 -e "VAULT_API_ADDR=http://0.0.0.0:8200" -v "/tmp/opt/app-id.json:/opt/app-id.json" -v "/tmp/opt/secrets.json:/opt/secrets.json" -v "${HOME}/go/src/github.com/dollarshaveclub/pvc/testing/vault_policies.json:/opt/policies.json" quay.io/dollarshaveclub/vault-dev:master
       - run: ls .
       # - run: go mod vendor      
       - run: export VAULT_ADDR="http://localhost:8200" && export VAULT_TOKEN=root && export VAULT_TEST_APPID=testing && export VAULT_TEST_USERID=asdf && VAULT_TEST_TOKEN=root && VAULT_DEV_ALREADY_RUNNING=1 && go test -v -race -cover
