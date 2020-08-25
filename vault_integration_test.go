@@ -27,18 +27,6 @@ func testGetVaultClient(t *testing.T) *vaultClient {
 	return vc
 }
 
-func TestVaultIntegrationAppIDAuth(t *testing.T) {
-	if testvb.host == "" {
-		t.Skipf("VAULT_ADDR undefined, skipping")
-		return
-	}
-	vc := testGetVaultClient(t)
-	err := vc.AppIDAuth(testvb.appid, testvb.userid, "")
-	if err != nil {
-		log.Fatalf("error authenticating: %v", err)
-	}
-}
-
 func TestVaultIntegrationTokenAuth(t *testing.T) {
 	if testvb.host == "" {
 		t.Skipf("VAULT_ADDR undefined, skipping")
@@ -57,7 +45,7 @@ func TestVaultIntegrationGetValue(t *testing.T) {
 		return
 	}
 	vc := testGetVaultClient(t)
-	err := vc.AppIDAuth(testvb.appid, testvb.userid, "")
+	err := vc.TokenAuth(testvb.token)
 	if err != nil {
 		t.Fatalf("error authenticating: %v", err)
 	}
