@@ -26,7 +26,7 @@ jobs:
           VAULT_API_ADDR: "http://0.0.0.0:8200"
           VAULT_SECRETS_FILE: /go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json
           VAULT_POLICIES_FILE: /go/src/github.com/dollarshaveclub/pvc/testing/vault_policies.json
-          
+    working_directory: /go/src/github.com/dollarshaveclub/pvc
     steps:
       - checkout
       - run:
