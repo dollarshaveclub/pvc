@@ -71,7 +71,7 @@ jobs:
       - run: ls /tmp
       - run: ls /opt
       - run: ls /tmp/opt
-        - setup_remote_docker
+      - setup_remote_docker
 
       # This should go into custom primary image, here's only for the sake of explanation
       - run:
