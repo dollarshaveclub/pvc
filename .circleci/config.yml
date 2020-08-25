@@ -48,7 +48,7 @@ jobs:
           name: Start Vault
           command: docker run --name vault -d -p 8200:8200 -e "VAULT_USE_APP_ID=1" -v "${PWD}/testing/vault_app_ids.json:/opt/app-id.json" -v "${PWD}/testing/vault_secrets.json:/opt/secrets.json" -v "${PWD}/testing/vault_policies.json:/opt/policies.json" quay.io/dollarshaveclub/vault-dev:master
       - run: ls .
-      - run: export GOPATH=${PWD}/go
+      - run: mkdir -p $GOPATH/bin
       - run:  curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
       - run: dep ensure
       - run: go build
