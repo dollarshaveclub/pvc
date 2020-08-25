@@ -32,9 +32,7 @@ jobs:
       - setup_remote_docker
       - run: ls .
       - run: ls /tmp/opt
-      - run: 
-          name: Start Vault
-          command: 
+     
       - run: go test -v -race -cover
 
 workflows:
