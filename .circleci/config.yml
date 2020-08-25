@@ -43,7 +43,7 @@ jobs:
       - checkout
       - run: sudo apt-get update
 
-      - run: wget https://golang.org/doc/install?download=go1.15.linux-amd64.tar.gz
+      - run: wget https://golang.org/dl/go1.15.linux-amd64.tar.gz
       - run: sudo tar -xvf go1.15.linux-amd64.tar.gz /usr/local 
       - run: export GOBIN="$HOME/go/bin"
       - run: mkdir -p $GOBIN
