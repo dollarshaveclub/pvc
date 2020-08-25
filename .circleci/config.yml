@@ -43,16 +43,17 @@ jobs:
       - run: sudo rm -rf /usr/local/go
       - checkout
       - run: sudo apt-get update
-      - run: wget https://golang.org/dl/go1.15.linux-amd64.tar.gz
-      - run: sudo tar -xvf go1.15.linux-amd64.tar.gz -C /usr/local 
+      - run: wget https://golang.org/dl/go1.14.linux-amd64.tar.gz
+      - run: sudo tar -xvf go1.14.linux-amd64.tar.gz -C /usr/local 
       - run: export GOBIN="${HOME}/go/bin"
       - run: sudo mkdir -p "${HOME}/go"
       - run: sudo mkdir -p "${HOME}/go/bin"
       - run: export PATH=${PATH}:${GOROOT}/bin:${GOBIN}
       - run: go version
+      - run: echo $HOME
       - run:
           name: Start Vault
-          command: docker run --name vault -d -p 8200:8200 -e "VAULT_USE_APP_ID=1" -v "${PWD}/testing/vault_app_ids.json:/opt/app-id.json" -v "${PWD}/testing/vault_secrets.json:/opt/secrets.json" -v "${PWD}/testing/vault_policies.json:/opt/policies.json" quay.io/dollarshaveclub/vault-dev:master
+          command: docker run --name vault -d -p 8200:8200 -e "VAULT_USE_APP_ID=1" -v "${HOME}/go/src/github.com/dollarshaveclub/pvc/testing/vault_app_ids.json:/opt/app-id.json" -v "${HOME}/go/src/github.com/dollarshaveclub/pvc/testing/vault_secrets.json:/opt/secrets.json" -v "${HOME}/go/src/github.com/dollarshaveclub/pvc/testing/vault_policies.json:/opt/policies.json" quay.io/dollarshaveclub/vault-dev:master
       - run: ls .
       - run: go mod vendor      
       - run: export VAULT_ADDR="http://localhost:8200" && export VAULT_TOKEN=root && export VAULT_TEST_APPID=testing && export VAULT_TEST_USERID=asdf && VAULT_TEST_TOKEN=root && VAULT_DEV_ALREADY_RUNNING=1 && go test -v -race -cover
