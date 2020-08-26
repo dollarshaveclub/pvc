@@ -12,6 +12,8 @@ const (
 
 var testvb = vaultBackend{
 	host:               os.Getenv("VAULT_ADDR"),
+	appid:              os.Getenv("VAULT_TEST_APPID"),
+	userid:             os.Getenv("VAULT_TEST_USERID"),
 	token:              os.Getenv("VAULT_TEST_TOKEN"),
 	authRetries:        3,
 	authRetryDelaySecs: 1,
@@ -23,6 +25,18 @@ func testGetVaultClient(t *testing.T) *vaultClient {
 		log.Fatalf("error creating client: %v", err)
 	}
 	return vc
+}
+
+func TestVaultIntegrationAppIDAuth(t *testing.T) {
+	if testvb.host == "" {
+		t.Skipf("VAULT_ADDR undefined, skipping")
+		return
+	}
+	vc := testGetVaultClient(t)
+	err := vc.AppIDAuth(testvb.appid, testvb.userid, "")
+	if err != nil {
+		log.Fatalf("error authenticating: %v", err)
+	}
 }
 
 func TestVaultIntegrationTokenAuth(t *testing.T) {
@@ -43,7 +57,7 @@ func TestVaultIntegrationGetValue(t *testing.T) {
 		return
 	}
 	vc := testGetVaultClient(t)
-	err := vc.TokenAuth(testvb.token)
+	err := vc.AppIDAuth(testvb.appid, testvb.userid, "")
 	if err != nil {
 		t.Fatalf("error authenticating: %v", err)
 	}
